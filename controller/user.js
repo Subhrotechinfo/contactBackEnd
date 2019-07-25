@@ -253,12 +253,13 @@ module.exports.updateUserProfile = (req, res) => {
                 .catch((err)=>{
                     reject('error not found');
                 })
-        })
+        });
     }
     decode(req, res)
         .then(findUserandUpdate)
         .then((updated)=>{
-            res.status(200).json({success: true, data:{msg: 'user details updated', value: updated}});
+            res.status(200).json({success: true, msg: 'user details updated',
+            data:{name: updated.name}});
         })
         .catch((err)=>{
             res.status(200).json({err:err});
