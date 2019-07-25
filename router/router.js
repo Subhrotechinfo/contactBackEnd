@@ -10,6 +10,6 @@ router.get('/ok', (req, res)=>{
 router.post('/login', login);
 router.post('/signup', signup);
 router.post('/getUserDetail', userDetail);
-router.post('/updateUserProfile',updateUserProfile);
+router.put('/updateUserProfile',updateUserProfile);
 
 module.exports = router;
