@@ -207,7 +207,7 @@ module.exports.userDetail = (req, res) => {
         })  
 }
 
-modules.exports.updateUserProfile = (req, res) => {
+module.exports.updateUserProfile = (req, res) => {
     //decode token
     let decode = () => {
         return new Promise((resolve, reject) => {
