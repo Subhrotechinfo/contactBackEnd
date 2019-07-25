@@ -222,10 +222,23 @@ module.exports.updateUserProfile = (req, res) => {
         })
     } //end edecode
     let findUserandUpdate = (userDetails) => {
-        let saveUserDetail =  {
-            'name': req.body.name,
-            'password': hashPassword(req.body.password)
-        };
+        let saveUserDetail = {};
+        if(req.body.name){
+            saveUserDetail =  {
+                'name': req.body.name
+            };
+        }else if(req.body.password){
+            saveUserDetail =  {
+                'password': hashPassword(req.body.password)
+            };
+
+        }else if(req.body.name && req.body.name){
+            saveUserDetail =  {
+                'name': req.body.name,
+                'password': hashPassword(req.body.password)
+            };
+        }
+        
         return new Promise((resolve, reject)=>{
             UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail)
                 .exec()
