@@ -221,6 +221,7 @@ module.exports.updateUserProfile = (req, res) => {
                 })
         })
     } //end edecode
+
     let findUserandUpdate = (userDetails) => {
         let saveUserDetail = {};
         if(req.body.name){
@@ -242,21 +243,11 @@ module.exports.updateUserProfile = (req, res) => {
         return new Promise((resolve, reject)=>{
             UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail)
                 .exec()
-                .then((userfound)=>{
-                    if(!isEmpty(userfound)){
-                        saveUserDetail.save()
-                            .then((updatedUser) => {
-                                if(isEmpty(updatedUser)){
-                                    reject({err: true, msg:'no user found'})
-                                }else {
-                                    resolve(updatedUser)
-                                }
-                            })
-                            .catch((err)=>{
-                                reject({err:err, msg:'could not save user'});
-                            });
+                .then((userUpdated)=>{
+                    if(!isEmpty(userUpdated)){
+                        resolve(userUpdated);
                     }else{
-                        reject('no user exist or invalid token');
+                        reject('not updated');
                     }
                 })
                 .catch((err)=>{
