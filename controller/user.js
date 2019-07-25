@@ -193,11 +193,11 @@ module.exports.userDetail = (req, res) => {
     decode(req, res)
         .then(findUser)
         .then((data)=>{
-            res.status(200).json({decode: true, userId: data.userId, name:data.name, emailId: data.emailId});
+            res.status(200).json({success: true, userId: data.userId, name:data.name, emailId: data.emailId});
         })  
         .catch((err)=>{
             console.error(err)
-            res.status(200).json({err:err});
+            res.status(200).json({err:err, error: true});
         })  
 }
 
