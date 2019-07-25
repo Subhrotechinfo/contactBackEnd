@@ -3,6 +3,7 @@ const {Email, Password} = require('../lib/inputValidator');
 const {isEmpty} = require('../lib/check');
 const model = require('../model/userModel') 
 const UserModel  = mongoose.model('user');
+const contact = require('../model/contactModel');
 const ContactModel = mongoose.model('contact');
 const {hashPassword, comparePassword}  = require('../lib/bcrypt');
 const shortId = require('shortid');
@@ -239,8 +240,7 @@ module.exports.updateUserProfile = (req, res) => {
                 'name': req.body.name,
                 'password': hashPassword(req.body.password)
             };
-        }
-        
+        }        
         return new Promise((resolve, reject)=>{
             UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail)
                 .exec()
@@ -288,26 +288,45 @@ module.exports.addContact = (req, res) => {
                 .exec()
                 .then((foundUser) => {
                     if(!isEmpty(foundUser)){
-
+                        ContactModel.findOne({mobile: req.body.mobile})
+                            .then((mobileNumber)=>{
+                                if(isEmpty(mobileNumber)){
+                                    let newContact = new ContactModel({
+                                        userId: token.userId,
+                                        name: req.body.name,
+                                        mobile: req.body.mobile
+                                    })
+                                    newContact.save()
+                                        .then((savedContact)=>{
+                                            resolve(savedContact);
+                                        })
+                                        .catch((err)=>{
+                                            reject('not able to save')
+                                        });
+                                } else {
+                                    reject('mobile number already exist');
+                                }
+                            })
+                            .catch((err)=>{
+                                reject('err finding details with mobile number');
+                            });
                     }else {
-
+                        reject('no user found');
                     }
                 })
                 .catch((err)=>{
-
+                    reject(err);
                 })
         })
     }
-
     decode(req, res) 
         .then(findUser)
         .then((data)=>{
-
+            res.status(200).json({data:data});
         })
         .catch((err)=>{
-
+            res.status(200).json({err:err});
         })
-
 }
 
 module.exports.getSingleContact = (req, res) => {
@@ -323,6 +342,30 @@ module.exports.getSingleContact = (req, res) => {
                 })
         })
     } //end edecode
+    let findContact = (token) =>{
+        return new Promise((resolve, reject) => {
+            ContactModel.findOne({userId: token.userId})
+                .exec()
+                .then((userContact)=>{
+                    if(isEmpty(userContact)){
+                        reject('not details found')
+                    }else {
+                        resolve(userContact);
+                    }
+                })
+                .catch((err)=>{
+                    reject('not found details');
+                })
+        })
+    }
+    decode(req, res)
+        .then(findContact)
+        .then((data) => {
+            res.status(200).json({data:data});
+        })
+        .catch((err)=> {
+            res.status(200).json({err:err});
+        })
 
 }
 
@@ -339,10 +382,122 @@ module.exports.getAllContacts = (req, res) => {
                 })
         })
     } //end edecode
+    let findContact = (token) =>{
+        return new Promise((resolve, reject) => {
+            ContactModel.find({userId: token.userId})
+                .exec()
+                .then((userContact)=>{
+                    if(isEmpty(userContact)){
+                        reject('not details found')
+                    }else {
+                        resolve(userContact);
+                    }
+                })
+                .catch((err)=>{
+                    reject('not found details');
+                })
+        })
+    }
+    decode(req, res)
+        .then(findContact)
+        .then((data) => {
+            res.status(200).json({data:data});
+        })
+        .catch((err)=> {
+            res.status(200).json({err:err});
+        })
 
 }
 
+module.exports.singleContactUpdate = (req, res) => {
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject('token')
+                })
+        })
+    } //end edecode
+    let findContactAndUpdate = (token) => {
+        let update = {};
+        if(req.body.name){
+            update = {
+                'name':req.body.name
+            }
+        }else if(req.body.mobile){
+            update = {
+                'mobile':req.body.mobile
+            }
+        } else if(req.body.name && req.body.mobile){
+            update = {
+                'name':req.body.name,
+                'mobile': req.body.update
+            }
+        }
+        return new Promise((resolve, reject)=>{
+            ContactModel.findByIdAndUpdate(req.body._id, update)
+                .then((updatedContact) => {
+                    if(isEmpty(updatedContact)){
+                        reject('no doc found')
+                    } else {
+                        resolve(updatedContact);
+                    }
+                })
+                .catch((err)=>{
+                    reject('not updated')
+                })
+        })
+    }
+    decode(req, res)
+        .then(findContactAndUpdate)
+        .then((data)=>{
+            res.status(200).json({data:data});
+        })
+        .catch((err) => {
+            res.status(200).json({err:err})
+        })
+}
+
 module.exports.deletSingleContact = (req, res) => {
-    
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject('token')
+                })
+        })
+    } //end edecode
+    let findContactAndDelete = (token) => {
+        return new Promise((resolve, reject)=>{
+            ContactModel.findByIdAndRemove(req.body._id)
+                .exec()
+                .then((deletedContact) => {
+                    if(isEmpty(deletedContact)){
+                        reject('no doc found')
+                    } else {
+                        resolve(deletedContact);
+                    }
+                })
+                .catch((err)=>{
+                    reject('not updated')
+                })
+        })
+    }
+    decode(req, res)
+        .then(findContactAndDelete)
+        .then((data)=>{
+            res.status(200).json({data:data});
+        })
+        .catch((err) => {
+            res.status(200).json({err:err})
+        })
 }
 

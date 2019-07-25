@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {signup, login, userDetail,updateUserProfile , addContact, getSingleContact, getAllContacts, deletSingleContact}  = require('../controller/user')
+const {signup, login, userDetail,updateUserProfile , 
+    addContact, getSingleContact, getAllContacts, 
+    deletSingleContact, singleContactUpdate}  = require('../controller/user')
 
 
 router.get('/ok', (req, res)=>{
@@ -16,5 +18,6 @@ router.post('/addContact', addContact);
 router.post('/getSingleContact', getSingleContact);
 router.post('/getAllContacts', getAllContacts);
 router.post('/deleteSingleContact', deletSingleContact);
+router.put('/singleUpdate', singleContactUpdate)
 
 module.exports = router;
