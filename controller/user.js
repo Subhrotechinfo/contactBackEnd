@@ -146,7 +146,7 @@ module.exports.login = (req, res) => {
         .then(passwordValidator)
         .then(tokenGenerate)
         .then((loggedinUser) => {
-            res.status(200).json({msg: 'login success', 
+            res.status(200).json({success: true, 
             data: {
                 token: loggedinUser.token, 
                 userId:loggedinUser.userId, 
