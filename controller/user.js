@@ -214,7 +214,7 @@ module.exports.updateUserProfile = (req, res) => {
             // console.log(req.headers.authorizations);
             decodeToken(req.headers.authorizations)
                 .then((decoded)=>{
-                    console.log(decoded);
+                    console.log(decoded.emailId);
                     // delete decoded.iat;
                     resolve(decoded);
                 })
@@ -224,12 +224,13 @@ module.exports.updateUserProfile = (req, res) => {
         })
     } //end edecode
     let findUserandUpdate = (userDetails) => {
+
         let saveUserDetail =  {
             'name': req.body.name,
             'password': hashPassword(req.body.password)
         };
         return new Promise((resolve, reject)=>{
-            UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail )
+            UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail)
                 .exec()
                 .then((userfound)=>{
                     if(!isEmpty(userfound)){
