@@ -211,10 +211,8 @@ module.exports.updateUserProfile = (req, res) => {
     //decode token
     let decode = () => {
         return new Promise((resolve, reject) => {
-            // console.log(req.headers.authorizations);
             decodeToken(req.headers.authorizations)
                 .then((decoded)=>{
-                    console.log(decoded.emailId);
                     // delete decoded.iat;
                     resolve(decoded);
                 })
@@ -224,7 +222,6 @@ module.exports.updateUserProfile = (req, res) => {
         })
     } //end edecode
     let findUserandUpdate = (userDetails) => {
-
         let saveUserDetail =  {
             'name': req.body.name,
             'password': hashPassword(req.body.password)
@@ -250,7 +247,7 @@ module.exports.updateUserProfile = (req, res) => {
                     }
                 })
                 .catch((err)=>{
-                    reject(err);
+                    reject('error not found');
                 })
         })
     }
