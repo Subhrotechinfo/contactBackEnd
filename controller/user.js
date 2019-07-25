@@ -224,23 +224,21 @@ module.exports.updateUserProfile = (req, res) => {
         })
     } //end edecode
     let findUserandUpdate = (userDetails) => {
+        let saveUserDetail =  {
+            'name': req.body.name,
+            'password': hashPassword(req.body.password)
+        };
         return new Promise((resolve, reject)=>{
-            UserModel.findOne({emailId: userDetails.emailId})
+            UserModel.findOneAndUpdate({emailId: userDetails.emailId},saveUserDetail )
                 .exec()
                 .then((userfound)=>{
                     if(!isEmpty(userfound)){
-                        let saveUserDetail = new UserModel ({
-                            name: req.body.name,
-                            password: hashPassword(req.body.password)
-                        })
                         saveUserDetail.save()
                             .then((updatedUser) => {
-                                if(!isEmpty(updatedUser)){
-                                    // delete newUser.password;
+                                if(isEmpty(updatedUser)){
+                                    reject({err: true, msg:'no user found'})
+                                }else {
                                     resolve(updatedUser)
-                                } else {
-                                    reject('Something went wrong while saving the data.');
-                                    
                                 }
                             })
                             .catch((err)=>{
@@ -258,7 +256,7 @@ module.exports.updateUserProfile = (req, res) => {
     decode(req, res)
         .then(findUserandUpdate)
         .then((updated)=>{
-            res.status(200).json({success: true, data:{msg: 'user details updated'}});
+            res.status(200).json({success: true, data:{msg: 'user details updated', value: updated}});
         })
         .catch((err)=>{
             res.status(200).json({err:err});
