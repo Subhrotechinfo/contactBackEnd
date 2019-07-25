@@ -3,6 +3,7 @@ const {Email, Password} = require('../lib/inputValidator');
 const {isEmpty} = require('../lib/check');
 const model = require('../model/userModel') 
 const UserModel  = mongoose.model('user');
+const ContactModel = mongoose.model('contact');
 const {hashPassword, comparePassword}  = require('../lib/bcrypt');
 const shortId = require('shortid');
 const {generateToken, decodeToken} = require('../lib/token')
@@ -267,5 +268,81 @@ module.exports.updateUserProfile = (req, res) => {
 
 }
 
+module.exports.addContact = (req, res) => {
+    //add the user
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject(err)
+                })
+        })
+    } //end edecode
+    let findUser = (token) => {
+        return new Promise((resolve,reject)=>{
+            UserModel.findOne({userId: token.userId})
+                .exec()
+                .then((foundUser) => {
+                    if(!isEmpty(foundUser)){
 
+                    }else {
+
+                    }
+                })
+                .catch((err)=>{
+
+                })
+        })
+    }
+
+    decode(req, res) 
+        .then(findUser)
+        .then((data)=>{
+
+        })
+        .catch((err)=>{
+
+        })
+
+}
+
+module.exports.getSingleContact = (req, res) => {
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject(err)
+                })
+        })
+    } //end edecode
+
+}
+
+module.exports.getAllContacts = (req, res) => {
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject(err)
+                })
+        })
+    } //end edecode
+
+}
+
+module.exports.deletSingleContact = (req, res) => {
+    
+}
 
