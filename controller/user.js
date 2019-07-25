@@ -193,7 +193,13 @@ module.exports.userDetail = (req, res) => {
     decode(req, res)
         .then(findUser)
         .then((data)=>{
-            res.status(200).json({success: true, userId: data.userId, name:data.name, emailId: data.emailId});
+            res.status(200).json({success: true, 
+                data:{
+                    userId: data.userId, 
+                    name:data.name, 
+                    emailId: data.emailId
+                    }
+                });
         })  
         .catch((err)=>{
             console.error(err)
@@ -201,7 +207,64 @@ module.exports.userDetail = (req, res) => {
         })  
 }
 
+modules.exports.updateUserProfile = (req, res) => {
+    //decode token
+    let decode = () => {
+        return new Promise((resolve, reject) => {
+            // console.log(req.headers.authorizations);
+            decodeToken(req.headers.authorizations)
+                .then((decoded)=>{
+                    console.log(decoded);
+                    // delete decoded.iat;
+                    resolve(decoded);
+                })
+                .catch((err)=>{
+                    reject(err)
+                })
+        })
+    } //end edecode
+    let findUserandUpdate = (userDetails) => {
+        return new Promise((resolve, reject)=>{
+            UserModel.findOne({emailId: userDetails.emailId})
+                .exec()
+                .then((userfound)=>{
+                    if(!isEmpty(userfound)){
+                        let saveUserDetail = new UserModel ({
+                            name: req.body.name,
+                            password: hashPassword(req.body.password)
+                        })
+                        saveUserDetail.save()
+                            .then((updatedUser) => {
+                                if(!isEmpty(updatedUser)){
+                                    // delete newUser.password;
+                                    resolve(updatedUser)
+                                } else {
+                                    reject('Something went wrong while saving the data.');
+                                    
+                                }
+                            })
+                            .catch((err)=>{
+                                reject({err:err, msg:'could not save user'});
+                            });
+                    }else{
+                        reject('no user exist or invalid token');
+                    }
+                })
+                .catch((err)=>{
+                    reject(err);
+                })
+        })
+    }
+    decode(req, res)
+        .then(findUserandUpdate)
+        .then((updated)=>{
+            res.status(200).json({success: true, data:{msg: 'user details updated'}});
+        })
+        .catch((err)=>{
+            res.status(200).json({err:err});
+        })
 
+}
 
 
 
