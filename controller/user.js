@@ -467,19 +467,19 @@ module.exports.singleContactUpdate = (req, res) => {
 }
 
 module.exports.deletSingleContact = (req, res) => {
-    let decode = () => {
-        return new Promise((resolve, reject) => {
-            decodeToken(req.headers.authorizations)
-                .then((decoded)=>{
-                    // delete decoded.iat;
-                    resolve(decoded);
-                })
-                .catch((err)=>{
-                    reject('token')
-                })
-        })
-    } //end edecode
-    let findContactAndDelete = (token) => {
+    // let decode = () => {
+    //     return new Promise((resolve, reject) => {
+    //         decodeToken(req.headers.authorizations)
+    //             .then((decoded)=>{
+    //                 // delete decoded.iat;
+    //                 resolve(decoded);
+    //             })
+    //             .catch((err)=>{
+    //                 reject('token')
+    //             })
+    //     })
+    // } //end edecode
+    let findContactAndDelete = () => {
         return new Promise((resolve, reject)=>{
             ContactModel.findOneAndRemove({_id: mongo.ObjectID(req.body._id)})
                 .lean()
@@ -495,8 +495,8 @@ module.exports.deletSingleContact = (req, res) => {
                 })
         })
     }
-    decode(req, res)
-        .then(findContactAndDelete)
+    findContactAndDelete(req, res)
+        // .then(findContactAndDelete)
         .then((data)=>{
             res.status(200).json({success: true, msg:'user deleted'});
         })
