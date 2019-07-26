@@ -439,7 +439,7 @@ module.exports.singleContactUpdate = (req, res) => {
             }
         }
         return new Promise((resolve, reject)=>{
-            ContactModel.findByIdAndUpdate(req.body._id, update)
+            ContactModel.findOneAndUpdate({'_id':new ObjectID(req.body._id)}, update)
                 .then((updatedContact) => {
                     if(isEmpty(updatedContact)){
                         reject('no doc found')
