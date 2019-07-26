@@ -481,7 +481,7 @@ module.exports.deletSingleContact = (req, res) => {
     } //end edecode
     let findContactAndDelete = (token) => {
         return new Promise((resolve, reject)=>{
-            ContactModel.findByIdAndRemove(req.body._id)
+            ContactModel.findOneAndDelete({_id: mongo.ObjectID(req.body._id)})
                 .exec()
                 .then((deletedContact) => {
                     if(isEmpty(deletedContact)){
