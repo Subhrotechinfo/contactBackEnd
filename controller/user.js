@@ -443,16 +443,16 @@ module.exports.singleContactUpdate = (req, res) => {
         console.log('updates-->',update, 'id-->', req.body._id);
         return new Promise((resolve, reject)=>{
             ContactModel.findOneAndUpdate({'_id':new mongo.ObjectID(req.body._id)}, update)
-            .exec()
+                .exec()
                 .then((updatedContact) => {
-                    if(isEmpty(updatedContact)){
-                        reject('no doc found')
-                    } else {
+                    if(!isEmpty(updatedContact)){
                         resolve(updatedContact);
+                    }else{
+                        reject('not updated');
                     }
                 })
                 .catch((err)=>{
-                    reject('not updated')
+                    reject({msg:'not updated', err:err})
                 })
         })
     }
