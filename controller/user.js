@@ -322,7 +322,7 @@ module.exports.addContact = (req, res) => {
     decode(req, res) 
         .then(findUser)
         .then((data)=>{
-            res.status(200).json({data:data});
+            res.status(200).json({success: true, msg: 'Contact added successfully',data:data});
         })
         .catch((err)=>{
             res.status(200).json({err:err});
