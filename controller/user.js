@@ -442,7 +442,7 @@ module.exports.singleContactUpdate = (req, res) => {
         update = {'name':req.body.name,'mobile': req.body.mobile}
         console.log('updates-->',update, 'id-->', req.body._id);
         return new Promise((resolve, reject)=>{
-            ContactModel.findOneAndUpdate({'_id':new mongo.ObjectID(req.body._id)}, update)
+            ContactModel.findOneAndUpdate({_id:new mongo.ObjectID(req.body._id)}, update)
                 .exec()
                 .then((updatedContact) => {
                     if(!isEmpty(updatedContact)){
