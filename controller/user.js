@@ -481,13 +481,13 @@ module.exports.deletSingleContact = (req, res) => {
     } //end edecode
     let findContactAndDelete = (token) => {
         return new Promise((resolve, reject)=>{
-            ContactModel.findOneAndDelete({_id: mongo.ObjectID(req.body._id)})
-                .exec()
+            ContactModel.findOneAndRemove({_id: mongo.ObjectID(req.body._id)})
+                .lean()
                 .then((deletedContact) => {
                     if(isEmpty(deletedContact)){
                         reject('no doc found')
                     } else {
-                        resolve(deletedContact);
+                        resolve('user deleted');
                     }
                 })
                 .catch((err)=>{
@@ -498,7 +498,7 @@ module.exports.deletSingleContact = (req, res) => {
     decode(req, res)
         .then(findContactAndDelete)
         .then((data)=>{
-            res.status(200).json({success: true, data:data});
+            res.status(200).json({success: true, msg:'user deleted'});
         })
         .catch((err) => {
             res.status(200).json({error:true, msg:'something is not right',err:err})
