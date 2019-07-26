@@ -480,6 +480,7 @@ module.exports.deletSingleContact = (req, res) => {
     //     })
     // } //end edecode
     let findContactAndDelete = () => {
+        console.log(req.body._id);
         return new Promise((resolve, reject)=>{
             ContactModel.findOneAndRemove({_id: mongo.ObjectID(req.body._id)})
                 .lean()
