@@ -425,21 +425,22 @@ module.exports.singleContactUpdate = (req, res) => {
     } //end edecode
     let findContactAndUpdate = (token) => {
         let update = {};
-        if(req.body.name){
-            update = {
-                'name':req.body.name
-            }
-        }else if(req.body.mobile){
-            update = {
-                'mobile':req.body.mobile
-            }
-        } else if(req.body.name && req.body.mobile){
-            update = {
-                'name':req.body.name,
-                'mobile': req.body.mobile
-            }
-        }
-        console.log('updates',update, 'id', req.body._id);
+        // if(req.body.name){
+        //     update = {
+        //         'name':req.body.name
+        //     }
+        // }else if(req.body.mobile){
+        //     update = {
+        //         'mobile':req.body.mobile
+        //     }
+        // } else if(req.body.name && req.body.mobile){
+        //     update = {
+        //         'name':req.body.name,
+        //         'mobile': req.body.mobile
+        //     }
+        // }
+        update = {'name':req.body.name,'mobile': req.body.mobile}
+        console.log('updates-->',update, 'id-->', req.body._id);
         return new Promise((resolve, reject)=>{
             ContactModel.findOneAndUpdate({'_id':new mongo.ObjectID(req.body._id)}, update)
             .exec()
