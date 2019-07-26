@@ -491,7 +491,7 @@ module.exports.deletSingleContact = (req, res) => {
                     }
                 })
                 .catch((err)=>{
-                    reject('not updated')
+                    reject('not deleted')
                 })
         })
     }
