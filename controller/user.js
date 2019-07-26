@@ -424,7 +424,7 @@ module.exports.singleContactUpdate = (req, res) => {
     } //end edecode
     let findContactAndUpdate = (token) => {
         let update = {};
-        if(req.body.name){
+        if(req.body.name && (req.body.userId == token.userId)){
             update = {
                 'name':req.body.name
             }
