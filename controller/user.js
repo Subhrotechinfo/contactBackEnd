@@ -436,7 +436,7 @@ module.exports.singleContactUpdate = (req, res) => {
         } else if(req.body.name && req.body.mobile){
             update = {
                 'name':req.body.name,
-                'mobile': req.body.update
+                'mobile': req.body.mobile
             }
         }
         console.log('updates',update, 'id', req.body._id);
