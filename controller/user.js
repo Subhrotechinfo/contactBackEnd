@@ -439,6 +439,7 @@ module.exports.singleContactUpdate = (req, res) => {
                 'mobile': req.body.update
             }
         }
+        console.log('updates',update, 'id', req.body._id);
         return new Promise((resolve, reject)=>{
             ContactModel.findOneAndUpdate({'_id':new mongo.ObjectID(req.body._id)}, update)
             .exec()
