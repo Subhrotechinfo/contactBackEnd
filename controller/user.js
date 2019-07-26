@@ -455,7 +455,7 @@ module.exports.singleContactUpdate = (req, res) => {
     decode(req, res)
         .then(findContactAndUpdate)
         .then((data)=>{
-            res.status(200).json({data:data});
+            res.status(200).json({success:true, msg:'Data updated', data:data});
         })
         .catch((err) => {
             res.status(200).json({err:err})
