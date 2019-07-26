@@ -487,7 +487,18 @@ module.exports.deletSingleContact = (req, res) => {
                     if(isEmpty(deletedContact)){
                         reject('no doc found')
                     } else {
-                        resolve(deletedContact);
+                        ContactModel.find({userId: token.userId})
+                            .exec()
+                            .then((updatedRecordsAfterDelete)=>{
+                                if(!isEmpty(updatedRecordsAfterDelete)){
+                                    resolve(updatedRecordsAfterDelete)
+                                } else {
+                                  reject('no more details')   
+                                }
+                            })
+                            .catch((err)=>{
+                                reject('something went wrong while delete')
+                            });
                     }
                 })
                 .catch((err)=>{
@@ -498,10 +509,10 @@ module.exports.deletSingleContact = (req, res) => {
     decode(req, res)
         .then(findContactAndDelete)
         .then((data)=>{
-            res.status(200).json({data:data});
+            res.status(200).json({success: true, data:data});
         })
         .catch((err) => {
-            res.status(200).json({err:err})
+            res.status(200).json({error:true, msg:'something is not right',err:err})
         })
 }
 
