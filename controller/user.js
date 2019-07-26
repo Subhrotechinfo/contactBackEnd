@@ -8,6 +8,7 @@ const ContactModel = mongoose.model('contact');
 const {hashPassword, comparePassword}  = require('../lib/bcrypt');
 const shortId = require('shortid');
 const {generateToken, decodeToken} = require('../lib/token')
+const mongo = require('mongodb');
 
 module.exports.signup = (req, res) =>{
         //validate the user input
@@ -439,7 +440,8 @@ module.exports.singleContactUpdate = (req, res) => {
             }
         }
         return new Promise((resolve, reject)=>{
-            ContactModel.findOneAndUpdate({'_id':new ObjectID(req.body._id)}, update)
+            ContactModel.findOneAndUpdate({'_id':new mongo.ObjectID(req.body._id)}, update)
+            .exec()
                 .then((updatedContact) => {
                     if(isEmpty(updatedContact)){
                         reject('no doc found')
